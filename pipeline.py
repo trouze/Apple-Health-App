@@ -1,6 +1,5 @@
 from pyicloud import PyiCloudService
 import pandas as pd
-# import zipfile, io
 import os
 from xml.etree.ElementTree import iterparse
 

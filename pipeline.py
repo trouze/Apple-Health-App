@@ -80,6 +80,7 @@ def push_gpx_data(blob_name, bucket_id, project_id, table_id, dataset_id):
 
 with Flow("AppleHealth-ETL") as flow:
     # set secrets via export PREFECT__CONTEXT__SECRETS__MY_KEY="MY_VALUE"
+    # get secrets
     project_id = PrefectSecret('PROJECTID')
     bucket_id = PrefectSecret('BUCKETID')
     u = PrefectSecret('ICLOUDU')
@@ -87,16 +88,19 @@ with Flow("AppleHealth-ETL") as flow:
     dataset_id = PrefectSecret('DATASETID')
     health_tableid = PrefectSecret('HTABLEID')
     gpx_tableid = PrefectSecret('GPXTABLEID')
+    
+    # fetch export data zipfile
     apple_data = extract_health_data(u,p)
-
+    
+    # parse XML documents
     transformed_workout_data = transform_workout_data(apple_data)
     transformed_gpx_data = transform_gpx_data(apple_data)
 
-    # fix these functions, I think you have to use the prefect functions to work
+    # push to GCS
     workout_blob = load_health_data(transformed_workout_data, project_id, bucket_id)
     gpx_blob = load_gpx_data(transformed_gpx_data, project_id, bucket_id)
 
-    # tell BQ data transfer to pick up new data
+    # Submit Job request to Load GCS data into BQ
     push_health_data(workout_blob,bucket_id,project_id,health_tableid,dataset_id)
     push_gpx_data(gpx_blob, bucket_id, project_id, gpx_tableid, dataset_id)
     

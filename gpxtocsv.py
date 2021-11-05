@@ -4,9 +4,6 @@ import gzip
 import json
 from io import StringIO
 
-__VERSION__ = '0.2.13.1'
-
-
 def _strip_ns_prefix(tree):
     """strip the namespace prefixes from all elements in a tree"""
     #thank you to https://stackoverflow.com/questions/30232031/how-can-i-strip-namespaces-out-of-an-lxml-tree
